@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>DPA vs NPT</title>
+  <style>
+    /* Tổng thể */
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #ff9a9e, #fef3cf);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1, h2 {
+      margin-bottom: 10px;
+    }
+
+    /* Form đăng nhập */
+    .login {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .login input {
+      padding: 10px;
+      margin: 10px;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .login button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .login button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Phần bình chọn */
+    .voting {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      margin: 20px;
+      max-width: 90%;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+      max-width: 1200px;
+      margin-top: 30px;
+    }
+
+    .person {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 300px;
+      transition: transform 0.2s ease;
+    }
+
+    .person:hover {
+      transform: translateY(-5px);
+    }
+
+    .person img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .vote-btn {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .vote-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .votes {
+      font-size: 18px;
+      margin-top: 10px;
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Màn hình đăng nhập -->
+  <div class="login" id="loginForm">
+    <h2>Đăng nhập để bình chọn</h2>
+    <input type="text" id="username" placeholder="Nhập tên của bạn" required><br>
+    <input type="password" id="password" placeholder="Nhập mật khẩu" required><br>
+    <button onclick="login()">Vào bình chọn</button>
+    <p id="loginError" style="color:red; display:none;">Sai mật khẩu! Thử lại nhé.</p>
+  </div>
+
+  <!-- Màn hình bình chọn -->
+  <div class="voting" id="votingSection" style="display: none;">
+    <h1>Hoa khôi D1 là?</h1>
+    <p id="welcomeUser" style="font-weight: bold; color: #555;"></p>
+    
+    <div class="container">
+      <div class="person" id="person1">
+        <img src="https://i.imgur.com/lRmW5oK.jpeg" alt="Người 1">
+        <h2>Dương Phương Anh</h2>
+        <a href="https://www.facebook.com/phuonganh.duong.73113" target="_blank">Facebook</a>
+        <div class="votes" id="votes1">0 lượt bình chọn</div>
+        <button class="vote-btn" onclick="vote(1)">Bình chọn</button>
+      </div>
+
+      <div class="person" id="person2">
+        <img src="https://i.imgur.com/uQ82qkk.jpeg" alt="Ngô Phương Thảo">
+        <h2>Ngô Phương Thảo</h2>
+        <a href="https://www.facebook.com/profile.php?id=100094590790368" target="_blank">Facebook</a>
+        <div class="votes" id="votes2">0 lượt bình chọn</div>
+        <button class="vote-btn" onclick="vote(2)">Bình chọn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let votes1 = 0;
+    let votes2 = 0;
+
+    function vote(person) {
+      if (person === 1) {
+        votes1++;
+        document.getElementById('votes1').textContent = `${votes1} lượt bình chọn`;
+      } else if (person === 2) {
+        votes2++;
+        document.getElementById('votes2').textContent = `${votes2} lượt bình chọn`;
+      }
+    }
+
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (password === "hoakhoid1") {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("votingSection").style.display = "block";
+        document.getElementById("welcomeUser").textContent = `Chào ${username || 'bạn'}, hãy bình chọn! 🌸`;
+      } else {
+        document.getElementById("loginError").style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+</html>
+<
