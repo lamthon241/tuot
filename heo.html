@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tạo QR Thanh Toán </title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://www.pixground.com/wp-content/uploads/2023/04/Varus-Arctic-Ops-Skin-League-of-Legends-4K-Wallpaper-1081x608.jpg')
+        no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    "
+  >
+    <div
+      style="
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+      "
+    >
+      CHÚ TƯỢT 2K6
+      <h2 style="color: #333; margin-bottom: 20px">Tạo QR Thanh Toán </h2>
+      <div style="margin-bottom: 20px">
+        <label
+          for="amount"
+          style="display: block; margin-bottom: 5px; color: #555"
+          >Nhập giá tiền:</label
+        >
+        <input
+          type="number"
+          id="amount"
+          placeholder="Nhập giá tiền (VNĐ)"
+          style="
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+          "
+          required
+        />
+      </div>
+      <button
+        onclick="generateQR()"
+        style="
+          padding: 10px 20px;
+          background: #af4c66;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 16px;
+          transition: background 0.3s;
+        "
+      >
+        Tạo QR Code
+      </button>
+      <div
+        style="
+          margin-top: 20px;
+          background: #f0f0f0;
+          padding: 15px;
+          border-radius: 5px;
+        "
+      >
+        
+          Nội dung: <span id="memoDisplay">Chưa tạo</span>
+        </p>
+      </div>
+      <div style="margin-top: 20px; text-align: center"></div>
+      <div id="qrcode" style="margin-top: 20px"></div>
+      <div
+        style="
+          margin-top: 10px;
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+        "
+      ></div>
+    </div>
+
+    <script>
+      function generateRandomMemo() {
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let result = "";
+        for (let i = 0; i < 8; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * characters.length)
+          );
+        }
+        return result;
+      }
+
+      function generateQR() {
+        // Lấy giá trị số tiền
+        const amount = document.getElementById("amount").value;
+
+        // Kiểm tra nếu không nhập số tiền
+        if (!amount || amount <= 0) {
+          alert("Vui lòng nhập số tiền hợp lệ!");
+          return;
+        }
+
+        // Tạo nội dung thanh toán ngẫu nhiên
+        const memo = generateRandomMemo();
+
+        // Hiển thị nội dung thanh toán trên giao diện
+        document.getElementById("memoDisplay").textContent = memo;
+
+        // Thông tin tài khoản ngân hàng
+        const bankInfo = {
+          accountName: "TRUONG PHUC LAM", // Bỏ dấu để đúng format URL
+          accountNumber: "1037169150",
+          bankCode: "VCB", // Mã TPBank
+          amount: amount,
+          memo: memo, // Nội dung thanh toán ngẫu nhiên
+        };
+
+        // Tạo URL API VietQR
+        const vietQRUrl = `https://api.vietqr.io/${bankInfo.bankCode}/${
+          bankInfo.accountNumber
+        }/${bankInfo.amount}/${
+          bankInfo.memo
+        }.jpg?accountName=${encodeURIComponent(bankInfo.accountName)}`;
+
+        const qrCodeDiv = document.getElementById("qrcode");
+        qrCodeDiv.innerHTML = "";
+        const qrImage = document.createElement("img");
+        qrImage.src = vietQRUrl;
+        qrImage.alt = "Mã QR Thanh Toán";
+        qrImage.style.width = "200px";
+        qrImage.style.height = "200px";
+        qrImage.style.border = "1px solid #ccc";
+        qrImage.style.borderRadius = "5px";
+        qrCodeDiv.appendChild(qrImage);
+      }
+    </script>
+  </body>
+</html>
