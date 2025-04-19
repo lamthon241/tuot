@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tạo QR Thanh Toán </title>
+    <title>Tạo QR Thanh Toán</title>
   </head>
   <body
     style="
@@ -31,8 +31,8 @@
         width: 90%;
       "
     >
-      DONATE
-      <h2 style="color: #333; margin-bottom: 20px">Tạo QR Thanh Toán </h2>
+      <h2 style="color: #333; margin-bottom: 20px">Tạo QR Thanh Toán</h2>
+
       <div style="margin-bottom: 20px">
         <label
           for="amount"
@@ -53,6 +53,7 @@
           required
         />
       </div>
+
       <button
         onclick="generateQR()"
         style="
@@ -68,6 +69,7 @@
       >
         Tạo QR Code
       </button>
+
       <div
         style="
           margin-top: 20px;
@@ -76,20 +78,28 @@
           border-radius: 5px;
         "
       >
-        
-          Nội dung: <span id="memoDisplay">Chưa tạo</span>
-        </p>
+        Nội dung: <span id="memoDisplay">Chưa tạo</span>
       </div>
-      <div style="margin-top: 20px; text-align: center"></div>
+
       <div id="qrcode" style="margin-top: 20px"></div>
-      <div
+
+      <button
+        id="downloadBtn"
         style="
+          padding: 10px 20px;
+          background: #4caf50;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 16px;
+          display: none;
           margin-top: 10px;
-          display: flex;
-          justify-content: center;
-          gap: 10px;
         "
-      ></div>
+        onclick="downloadQR()"
+      >
+        Lưu ảnh QR
+      </button>
     </div>
 
     <script>
@@ -105,36 +115,26 @@
       }
 
       function generateQR() {
-        // Lấy giá trị số tiền
         const amount = document.getElementById("amount").value;
-
-        // Kiểm tra nếu không nhập số tiền
         if (!amount || amount <= 0) {
           alert("Vui lòng nhập số tiền hợp lệ!");
           return;
         }
 
-        // Tạo nội dung thanh toán ngẫu nhiên
         const memo = generateRandomMemo();
-
-        // Hiển thị nội dung thanh toán trên giao diện
         document.getElementById("memoDisplay").textContent = memo;
 
-        // Thông tin tài khoản ngân hàng
         const bankInfo = {
-          accountName: "TRUONG PHUC LAM", // Bỏ dấu để đúng format URL
+          accountName: "TRUONG PHUC LAM",
           accountNumber: "1037169150",
-          bankCode: "VCB", // Mã TPBank
+          bankCode: "VCB",
           amount: amount,
-          memo: memo, // Nội dung thanh toán ngẫu nhiên
+          memo: memo,
         };
 
-        // Tạo URL API VietQR
-        const vietQRUrl = `https://api.vietqr.io/${bankInfo.bankCode}/${
-          bankInfo.accountNumber
-        }/${bankInfo.amount}/${
-          bankInfo.memo
-        }.jpg?accountName=${encodeURIComponent(bankInfo.accountName)}`;
+        const vietQRUrl = `https://api.vietqr.io/${bankInfo.bankCode}/${bankInfo.accountNumber}/${bankInfo.amount}/${bankInfo.memo}.jpg?accountName=${encodeURIComponent(
+          bankInfo.accountName
+        )}`;
 
         const qrCodeDiv = document.getElementById("qrcode");
         qrCodeDiv.innerHTML = "";
@@ -146,6 +146,18 @@
         qrImage.style.border = "1px solid #ccc";
         qrImage.style.borderRadius = "5px";
         qrCodeDiv.appendChild(qrImage);
+
+        document.getElementById("downloadBtn").style.display = "inline-block";
+      }
+
+      function downloadQR() {
+        const qrImg = document.querySelector("#qrcode img");
+        if (!qrImg) return;
+
+        const link = document.createElement("a");
+        link.href = qrImg.src;
+        link.download = "qr-thanh-toan.jpg";
+        link.click();
       }
     </script>
   </body>
