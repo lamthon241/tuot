@@ -78,6 +78,14 @@
         margin-top: 20px;
       }
 
+      #downloadBtn {
+        display: none;
+        margin-top: 10px;
+        color: #007bff;
+        text-decoration: underline;
+        font-size: 16px;
+      }
+
       @media (max-width: 480px) {
         .container {
           padding: 18px;
@@ -101,6 +109,13 @@
         Nội dung: <span id="memoDisplay">Chưa tạo</span>
       </div>
       <div id="qrcode"></div>
+      <a
+        id="downloadBtn"
+        href="#"
+        download="qr-code.jpg"
+      >
+        Tải mã QR về máy
+      </a>
     </div>
 
     <script>
@@ -145,6 +160,11 @@
         qrImage.style.border = "1px solid #ccc";
         qrImage.style.borderRadius = "5px";
         qrCodeDiv.appendChild(qrImage);
+
+        // Cập nhật nút tải ảnh QR
+        const downloadBtn = document.getElementById("downloadBtn");
+        downloadBtn.href = vietQRUrl;
+        downloadBtn.style.display = "inline-block";
       }
     </script>
   </body>
