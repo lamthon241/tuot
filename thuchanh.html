@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Khai Báo Thông Tin Cá Nhân</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    .form-group { margin-bottom: 10px; }
+    label { display: block; margin-bottom: 5px; }
+    input { width: 300px; padding: 5px; }
+    .error { color: red; font-size: 14px; }
+    .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+
+<h2>Form Khai Báo Thông Tin Cá Nhân</h2>
+
+<form id="infoForm">
+  <div class="form-group">
+    <label>Họ tên:</label>
+    <input type="text" id="fullname">
+    <div class="error" id="error-fullname"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Ngày sinh (dd/mm/yyyy):</label>
+    <input type="text" id="birthdate" placeholder="dd/mm/yyyy" maxlength="10">
+    <div class="error" id="error-birthdate"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Tuổi:</label>
+    <input type="text" id="age">
+    <div class="error" id="error-age"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Quê quán:</label>
+    <input type="text" id="hometown">
+    <div class="error" id="error-hometown"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Email:</label>
+    <input type="text" id="email">
+    <div class="error" id="error-email"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Số điện thoại:</label>
+    <input type="text" id="phone">
+    <div class="error" id="error-phone"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Số CMND/CCCD:</label>
+    <input type="text" id="idNumber">
+    <div class="error" id="error-idNumber"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Nghề nghiệp:</label>
+    <input type="text" id="job">
+    <div class="error" id="error-job"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Tên tài khoản (username):</label>
+    <input type="text" id="username">
+    <div class="error" id="error-username"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Mật khẩu:</label>
+    <input type="text" id="password">
+    <div class="error" id="error-password"></div>
+  </div>
+
+  <button type="submit">Gửi thông tin</button>
+</form>
+
+<div id="success" style="color: green; font-weight: bold; margin-top: 15px;"></div>
+
+<div class="result" id="result"></div>
+
+<script>
+  // Tự động định dạng ngày sinh dd/mm/yyyy
+  const birthInput = document.getElementById('birthdate');
+  birthInput.addEventListener('input', function () {
+    let value = this.value.replace(/\D/g, '').slice(0, 8); // chỉ lấy số và giới hạn 8 chữ số
+    if (value.length >= 3) value = value.slice(0, 2) + '/' + value.slice(2);
+    if (value.length >= 6) value = value.slice(0, 5) + '/' + value.slice(5);
+    this.value = value;
+  });
+
+  document.getElementById('infoForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const fields = ['fullname', 'birthdate', 'age', 'hometown', 'email', 'phone', 'idNumber', 'job', 'username', 'password'];
+    let isValid = true;
+
+    // Xóa thông báo lỗi cũ
+    fields.forEach(field => {
+      document.getElementById('error-' + field).innerText = '';
+    });
+
+    let fullname = document.getElementById('fullname').value.trim();
+    if (fullname === '' || hasNumberOrSpecial(fullname)) {
+      showError('fullname', 'Họ tên không được để trống và không chứa số hoặc ký tự đặc biệt.');
+      isValid = false;
+    }
+
+    let birthdate = document.getElementById('birthdate').value.trim();
+    if (!isValidDate(birthdate)) {
+      showError('birthdate', 'Ngày sinh không hợp lệ. Định dạng dd/mm/yyyy.');
+      isValid = false;
+    }
+
+    let age = document.getElementById('age').value.trim();
+    let ageNum = parseInt(age);
+    if (!isNumber(age) || ageNum < 1 || ageNum > 120) {
+      showError('age', 'Tuổi phải là số nguyên từ 1 đến 120.');
+      isValid = false;
+    }
+
+    let hometown = document.getElementById('hometown').value.trim();
+    if (hometown === '') {
+      showError('hometown', 'Quê quán không được để trống.');
+      isValid = false;
+    }
+
+    let email = document.getElementById('email').value.trim();
+    if (email.indexOf('@') === -1) {
+      showError('email', 'Email phải chứa ký tự "@".');
+      isValid = false;
+    }
+
+    let phone = document.getElementById('phone').value.trim();
+    if (phone.length !== 10 || phone[0] !== '0' || ['3','5','7','8','9'].indexOf(phone[1]) === -1 || !isNumber(phone)) {
+      showError('phone', 'Số điện thoại không hợp lệ.');
+      isValid = false;
+    }
+
+    let idNumber = document.getElementById('idNumber').value.trim();
+    if ((idNumber.length !== 9 && idNumber.length !== 12) || !isNumber(idNumber)) {
+      showError('idNumber', 'CMND/CCCD phải có 9 hoặc 12 chữ số.');
+      isValid = false;
+    }
+
+    let job = document.getElementById('job').value.trim();
+    if (job === '') {
+      showError('job', 'Nghề nghiệp không được để trống.');
+      isValid = false;
+    }
+
+    let username = document.getElementById('username').value.trim();
+    if (username === '' || username.length < 6 || username.length > 20 || username.includes(' ')) {
+      showError('username', 'Tên tài khoản từ 6–20 ký tự, không chứa khoảng trắng.');
+      isValid = false;
+    }
+
+    let password = document.getElementById('password').value.trim();
+    if (password === '' || password.length < 6) {
+      showError('password', 'Mật khẩu phải có ít nhất 6 ký tự.');
+      isValid = false;
+    }
+
+    if (isValid) {
+      document.getElementById('success').innerText = 'Gửi thông tin thành công!';
+      showResult({
+        'Họ tên': fullname,
+        'Ngày sinh': birthdate,
+        'Tuổi': age,
+        'Quê quán': hometown,
+        'Email': email,
+        'Số điện thoại': phone,
+        'CMND/CCCD': idNumber,
+        'Nghề nghiệp': job,
+        'Tên tài khoản': username,
+        'Mật khẩu': password
+      });
+    } else {
+      document.getElementById('success').innerText = '';
+      document.getElementById('result').innerHTML = '';
+    }
+  });
+
+  function showError(id, message) {
+    document.getElementById('error-' + id).innerText = message;
+  }
+
+  function hasNumberOrSpecial(text) {
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (!(ch >= 'A' && ch <= 'Z') && !(ch >= 'a' && ch <= 'z') && ch !== ' ' && ch !== 'đ' && ch !== 'Đ' && ch < '\u00C0') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function isNumber(str) {
+    for (let i = 0; i < str.length; i++) {
+      if (str[i] < '0' || str[i] > '9') return false;
+    }
+    return true;
+  }
+
+  function isValidDate(dateStr) {
+    const parts = dateStr.split('/');
+    if (parts.length !== 3) return false;
+
+    const d = parseInt(parts[0]);
+    const m = parseInt(parts[1]);
+    const y = parseInt(parts[2]);
+
+    if (isNaN(d) || isNaN(m) || isNaN(y)) return false;
+    if (d < 1 || m < 1 || m > 12) return false;
+
+    const daysInMonth = [31, (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0) ? 29 : 28, 31,30,31,30,31,31,30,31,30,31];
+    return d <= daysInMonth[m - 1];
+  }
+
+  function showResult(data) {
+    let resultHTML = '';
+    for (const key in data) {
+      resultHTML += `<strong>${key}:</strong> ${data[key]}<br>`;
+    }
+    document.getElementById('result').innerHTML = resultHTML;
+  }
+</script>
+
+</body>
+</html>
